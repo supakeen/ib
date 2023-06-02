@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/osbuild/ib/cmd"
+import "github.com/supakeen/ib/cmd"
 
 func main() {
 	cmd.Execute()

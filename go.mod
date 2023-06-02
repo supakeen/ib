@@ -1,4 +1,4 @@
-module github.com/osbuild/ib
+module github.com/supakeen/ib
 
 go 1.20
 

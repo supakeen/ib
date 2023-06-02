@@ -23,7 +23,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/osbuild/ib/lib/api"
+	"github.com/supakeen/ib/lib/api"
 	"github.com/spf13/cobra"
 	"log"
 )
