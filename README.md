@@ -24,3 +24,13 @@ downloading 968d1756-9121-47cb-8f27-3582639206aa
 If you wish for a bit more control then the queuing, status, and downloading steps can be performed separately with the `ib c q`, `ib c s`, and `ib c d` commands. Check their `-help` for any arguments you might need.
 
 If you want to list available distributions you use `ib i d`, if you want to know which architectures support which image types you can use `ib i a -d centos-9`.
+
+The images you download can be customized in various ways:
+
+### Packages
+
+Installing additional packages is done through `-p` argument which takes a comma-separated list of package names:
+
+```
+€ ib c -a x86_64 -d centos-9 -t guest-image -p nginx,tmux -o image.qcow
+```
