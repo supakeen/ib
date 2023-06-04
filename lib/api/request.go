@@ -26,7 +26,21 @@ Functions and structs to perform requests to the Image Builder API.
 
 package api
 
-type CustomizationRequest struct {
+type Package string
+type Empty struct{}
+
+type CustomRepository struct{}
+type PayloadRepository struct{}
+
+type Filesystem struct{}
+type Subscription struct{}
+
+type User struct {
+	Name   string `json:name`
+	SSHKey string `json:ssh_key`
+}
+
+type Customizations struct {
 	Packages            []Package           `json:"packages,omitempty"`
 	CustomRepositories  []CustomRepository  `json:"custom_repositories,omitempty"`
 	PayloadRepositories []PayloadRepository `json:"payload_repositories,omitempty"`
@@ -46,8 +60,8 @@ type ImageRequest struct {
 }
 
 type ComposeRequest struct {
-	Distribution   string                `json:"distribution"`
-	Name           string                `json:"image_name"`
-	Customizations *CustomizationRequest `json:"customizations,omitempty"`
-	ImageRequests  []ImageRequest        `json:"image_requests"`
+	Distribution   string          `json:"distribution"`
+	Name           string          `json:"image_name"`
+	Customizations *Customizations `json:"customizations,omitempty"`
+	ImageRequests  []ImageRequest  `json:"image_requests"`
 }

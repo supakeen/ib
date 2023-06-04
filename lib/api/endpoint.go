@@ -35,50 +35,13 @@ import (
 	"sort"
 )
 
-type Package string
-type Empty struct{}
-
-type CustomRepository struct{}
-type PayloadRepository struct{}
-
-type Filesystem struct{}
-type Subscription struct{}
-
-type User struct {
-	Name   string `json:name`
-	SSHKey string `json:ssh_key`
-}
-
-type Architecture struct {
-	Name       string   `json:"arch"`
-	ImageTypes []string `json:"image_types"`
-}
-
-type Distribution struct {
-	Description string `json:"description"`
-	Name        string `json:"name"`
-}
-
-type ImageStatus struct {
-	Status struct {
-		Status       string `json:"status"`
-		UploadStatus struct {
-			Options struct {
-				URL string `json:"url"`
-			} `json:"options"`
-		} `json:"upload_status"`
-	} `json:"image_status"`
-	Request struct {
-	} `json:"request"`
-}
-
 func NewComposeRequest(distribution string, architecture string, imageType string, name string, packages []string) string {
 	EnsureToken()
 
 	var composeRequest ComposeRequest
 	var imageRequest ImageRequest
 	var uploadRequest UploadRequest
-	var customizationRequest CustomizationRequest
+	var customizationRequest Customizations
 
 	composeRequest.Distribution = distribution
 	composeRequest.Name = name
@@ -120,7 +83,7 @@ func NewComposeRequest(distribution string, architecture string, imageType strin
 		log.Fatal(err)
 	}
 
-	var composeResponse ComposeRequestResponse
+	var composeResponse ComposeResponse
 
 	err = json.Unmarshal(body, &composeResponse)
 
@@ -154,7 +117,7 @@ func NewComposeStatusRequest(composeID string) string {
 		log.Fatal(err)
 	}
 
-	var imageStatus ImageStatus
+	var imageStatus ComposeStatus
 
 	err = json.Unmarshal(body, &imageStatus)
 
@@ -188,7 +151,7 @@ func NewComposeDownloadRequest(composeID string) string {
 		log.Fatal(err)
 	}
 
-	var imageStatus ImageStatus
+	var imageStatus ComposeStatus
 
 	err = json.Unmarshal(body, &imageStatus)
 
@@ -199,7 +162,7 @@ func NewComposeDownloadRequest(composeID string) string {
 	return imageStatus.Status.UploadStatus.Options.URL
 }
 
-func NewDistributionsRequest() []Distribution {
+func NewDistributionsRequest() Distributions {
 	EnsureToken()
 
 	url := "https://console.redhat.com/api/image-builder/v1/distributions"
@@ -226,7 +189,7 @@ func NewDistributionsRequest() []Distribution {
 		log.Fatal(err)
 	}
 
-	var distributions []Distribution
+	var distributions Distributions
 
 	err = json.Unmarshal(body, &distributions)
 
@@ -241,7 +204,7 @@ func NewDistributionsRequest() []Distribution {
 	return distributions
 }
 
-func NewArchitecturesRequest(distribution string) []Architecture {
+func NewArchitecturesRequest(distribution string) Architectures {
 	EnsureToken()
 
 	url := "https://console.redhat.com/api/image-builder/v1/architectures/" + distribution
@@ -268,7 +231,7 @@ func NewArchitecturesRequest(distribution string) []Architecture {
 		log.Fatal(err)
 	}
 
-	var architectures []Architecture
+	var architectures Architectures
 
 	err = json.Unmarshal(body, &architectures)
 
@@ -283,7 +246,7 @@ func NewArchitecturesRequest(distribution string) []Architecture {
 	return architectures
 }
 
-func NewComposeListRequest() []ComposeResponse {
+func NewComposeListRequest() []ComposesResponseItem {
 	EnsureToken()
 
 	url := "https://console.redhat.com/api/image-builder/v1/composes"
@@ -306,7 +269,7 @@ func NewComposeListRequest() []ComposeResponse {
 		log.Fatal(err)
 	}
 
-	var listResponse ComposeListResponse
+	var listResponse ComposesResponse
 
 	err = json.Unmarshal(body, &listResponse)
 
