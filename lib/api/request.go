@@ -41,7 +41,7 @@ type User struct {
 }
 
 type Customizations struct {
-	Packages            []Package           `json:"packages,omitempty"`
+	Packages            []string            `json:"packages,omitempty"`
 	CustomRepositories  []CustomRepository  `json:"custom_repositories,omitempty"`
 	PayloadRepositories []PayloadRepository `json:"payload_repositories,omitempty"`
 	SubscriptionDetails *Subscription       `json:"subscription,omitempty"`

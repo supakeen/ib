@@ -40,14 +40,30 @@ var ComposeArchitecture string
 var ComposeImageType string
 var ComposeOutputFile string
 var ComposePackages string
+var ComposeUsers string
 
 // composeCmd represents the compose command
 var composeCmd = &cobra.Command{
 	Use:   "c",
-	Short: "Build an image",
-	Long:  ``,
+	Short: "Build a (customized) image",
+	Long:  `Build a (customized) image. Wait for the build. Download the result.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		composeID := api.NewComposeRequest(ComposeDistribution, ComposeArchitecture, ComposeImageType, "demo", strings.Split(ComposePackages, ","))
+		var users []api.User
+
+		for _, userFromCli := range strings.Split(ComposeUsers, ",") {
+			part := strings.Split(userFromCli, ":")
+
+			if len(part) != 2 {
+				log.Fatal("invalid user")
+			}
+
+			users = append(users, api.User{
+				Name:   part[0],
+				SSHKey: part[1],
+			})
+		}
+
+		composeID := api.NewComposeRequest(ComposeDistribution, ComposeArchitecture, ComposeImageType, "demo", strings.Split(ComposePackages, ","), users)
 
 		fmt.Printf("queued %s\n", composeID)
 
@@ -85,18 +101,20 @@ var composeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(composeCmd)
 
-	composeCmd.Flags().StringVarP(&ComposeDistribution, "distribution", "d", "", "Request a specific distribution.")
+	composeCmd.Flags().StringVarP(&ComposeDistribution, "distribution", "d", "", "Request a specific distribution for example `centos-9`.")
 	composeCmd.MarkFlagRequired("distribution")
 
-	composeCmd.Flags().StringVarP(&ComposeArchitecture, "architecture", "a", "", "Request a specific architecture.")
+	composeCmd.Flags().StringVarP(&ComposeArchitecture, "architecture", "a", "", "Request a specific architecture for example `x86_64`.")
 	composeCmd.MarkFlagRequired("architecture")
 
-	composeCmd.Flags().StringVarP(&ComposeImageType, "image-type", "t", "", "Request a specific image-type.")
+	composeCmd.Flags().StringVarP(&ComposeImageType, "image-type", "t", "", "Request a specific image-type for example `guest-image`.")
 	composeCmd.MarkFlagRequired("image-type")
 
-	composeCmd.Flags().StringVarP(&ComposeOutputFile, "output-file", "o", "", "File to write to.")
+	composeCmd.Flags().StringVarP(&ComposeOutputFile, "output-file", "o", "", "File to write to for example `image.qcow`.")
 	composeCmd.MarkFlagRequired("output-file")
 
-	composeCmd.Flags().StringVarP(&ComposePackages, "packages", "p", "", "Comma-separated list of additional packages to install.")
+	composeCmd.Flags().StringVarP(&ComposePackages, "packages", "p", "", "Additional packages to install in `nginx,tmux` format.")
+
+	composeCmd.Flags().StringVarP(&ComposeUsers, "users", "u", "", "Additional users to add in `user:ssh-key,user:ssh-key` format.")
 
 }

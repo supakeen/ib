@@ -35,13 +35,16 @@ import (
 	"sort"
 )
 
-func NewComposeRequest(distribution string, architecture string, imageType string, name string, packages []string) string {
+func NewComposeRequest(distribution string, architecture string, imageType string, name string, packages []string, users []User) string {
 	EnsureToken()
 
 	var composeRequest ComposeRequest
 	var imageRequest ImageRequest
 	var uploadRequest UploadRequest
 	var customizationRequest Customizations
+
+	customizationRequest.Packages = packages
+	customizationRequest.Users = users
 
 	composeRequest.Distribution = distribution
 	composeRequest.Name = name

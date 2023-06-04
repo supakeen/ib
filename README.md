@@ -34,3 +34,11 @@ Installing additional packages is done through `-p` argument which takes a comma
 ```
 € ib c -a x86_64 -d centos-9 -t guest-image -p nginx,tmux -o image.qcow
 ```
+
+### Users
+
+Adding additional users is done through `-u` argument which takes a comma-separated list of `user:ssh-pub-key`, don't forget to use quotes around your value as it contains spaces:
+
+```
+€ ib c -a x86_64 -d centos-9 -t guest-image -p nginx,tmux -u 'supakeen:ssh-edcsa ...' -o image.qcow
+```

@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -33,6 +34,7 @@ var QueueDistribution string
 var QueueArchitecture string
 var QueueImageType string
 var QueuePackages string
+var QueueUsers string
 
 // queueCmd represents the compose command
 var queueCmd = &cobra.Command{
@@ -40,21 +42,38 @@ var queueCmd = &cobra.Command{
 	Short: "Queue an image build",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(api.NewComposeRequest(QueueDistribution, QueueArchitecture, QueueImageType, "demo", strings.Split(QueuePackages, ",")))
+		var users []api.User
+
+		for _, userFromCli := range strings.Split(QueueUsers, ",") {
+			part := strings.Split(userFromCli, ":")
+
+			if len(part) != 2 {
+				log.Fatal("invalid user")
+			}
+
+			users = append(users, api.User{
+				Name:   part[0],
+				SSHKey: part[1],
+			})
+		}
+
+		fmt.Println(api.NewComposeRequest(QueueDistribution, QueueArchitecture, QueueImageType, "demo", strings.Split(QueuePackages, ","), users))
 	},
 }
 
 func init() {
 	composeCmd.AddCommand(queueCmd)
 
-	queueCmd.Flags().StringVarP(&QueueDistribution, "distribution", "d", "", "Request a specific distribution.")
+	queueCmd.Flags().StringVarP(&QueueDistribution, "distribution", "d", "", "Request a specific distribution for example `centos-9`.")
 	queueCmd.MarkFlagRequired("distribution")
 
-	queueCmd.Flags().StringVarP(&QueueArchitecture, "architecture", "a", "", "Request a specific architecture.")
+	queueCmd.Flags().StringVarP(&QueueArchitecture, "architecture", "a", "", "Request a specific architecture for example `x86_64`.")
 	queueCmd.MarkFlagRequired("architecture")
 
-	queueCmd.Flags().StringVarP(&QueueImageType, "image-type", "t", "", "Request a specific image-type.")
+	queueCmd.Flags().StringVarP(&QueueImageType, "image-type", "t", "", "Request a specific image-type for example `guest-image`.")
 	queueCmd.MarkFlagRequired("image-type")
 
-	queueCmd.Flags().StringVarP(&QueuePackages, "packages", "p", "", "Comma-separated list of additional packages to install.")
+	queueCmd.Flags().StringVarP(&QueuePackages, "packages", "p", "", "Additional packages to install in `nginx,tmux` format.")
+
+	queueCmd.Flags().StringVarP(&QueueUsers, "users", "u", "", "Additional users to add in `user:ssh-key,user:ssh-key` format.")
 }
