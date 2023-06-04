@@ -49,45 +49,6 @@ type User struct {
 	SSHKey string `json:ssh_key`
 }
 
-type CustomizationRequest struct {
-	Packages            []Package           `json:"packages,omitempty"`
-	CustomRepositories  []CustomRepository  `json:"custom_repositories,omitempty"`
-	PayloadRepositories []PayloadRepository `json:"payload_repositories,omitempty"`
-	SubscriptionDetails *Subscription       `json:"subscription,omitempty"`
-	Users               []User              `json:"users,omitempty"`
-}
-
-type UploadRequest struct {
-	Type    string `json:"type"`
-	Options Empty  `json:"options"`
-}
-
-type ImageRequest struct {
-	Architecture  string        `json:"architecture"`
-	ImageType     string        `json:"image_type"`
-	UploadRequest UploadRequest `json:"upload_request"`
-}
-
-type ComposeRequest struct {
-	Distribution   string                `json:"distribution"`
-	Name           string                `json:"image_name"`
-	Customizations *CustomizationRequest `json:"customizations,omitempty"`
-	ImageRequests  []ImageRequest        `json:"image_requests"`
-}
-
-type ComposeRequestResponse struct {
-	ID string `json:"id"`
-}
-
-type ComposeResponse struct {
-	ID   string `json:"id"`
-	Name string `json:"image_name"`
-}
-
-type ComposeListResponse struct {
-	Data []ComposeResponse `json:"data"`
-}
-
 type Architecture struct {
 	Name       string   `json:"arch"`
 	ImageTypes []string `json:"image_types"`
