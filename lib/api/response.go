@@ -26,15 +26,48 @@ Functions and structs to perform requests to the Image Builder API.
 
 package api
 
-type ComposeRequestResponse struct {
-	ID string `json:"id"`
+type Architectures []ArchitectureItem
+
+type ArchitectureItem struct {
+	Name       string   `json:"arch"`
+	ImageTypes []string `json:"image_types"`
+}
+
+type Distributions []DistributionItem
+
+type DistributionItem struct {
+	Description string `json:"description"`
+	Name        string `json:"name"`
 }
 
 type ComposeResponse struct {
-	ID   string `json:"id"`
-	Name string `json:"image_name"`
+	ID string `json:"id"`
 }
 
-type ComposeListResponse struct {
-	Data []ComposeResponse `json:"data"`
+type ComposesResponse struct {
+	Data  []ComposesResponseItem `json:"data"`
+	Links struct {
+		First string `json:"first"`
+		Last  string `json:"last"`
+	} `json:"links"`
+}
+
+type ComposesResponseItem struct {
+	CreatedAt string `json:"created_at"`
+	ID        string `json:"id"`
+	Name      string `json:"image_name"`
+}
+
+type ImageStatus struct {
+	Status       string `json:"status"`
+	UploadStatus struct {
+		Options struct {
+			URL string `json:"url"`
+		} `json:"options"`
+	} `json:"upload_status"`
+}
+
+type ComposeStatus struct {
+	Status  ImageStatus    `json:"image_status"`
+	Request ComposeRequest `json:"request"`
 }
