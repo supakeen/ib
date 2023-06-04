@@ -28,8 +28,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/supakeen/ib/lib/api"
 	"github.com/spf13/cobra"
+	"github.com/supakeen/ib/lib/api"
 )
 
 var DownloadComposeID string

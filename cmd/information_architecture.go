@@ -23,8 +23,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/supakeen/ib/lib/api"
 	"github.com/spf13/cobra"
+	"github.com/supakeen/ib/lib/api"
 	"log"
 )
 

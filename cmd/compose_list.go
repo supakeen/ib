@@ -23,38 +23,24 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/spf13/cobra"
 	"github.com/supakeen/ib/lib/api"
 )
 
-var QueueDistribution string
-var QueueArchitecture string
-var QueueImageType string
-var QueuePackages string
-
-// queueCmd represents the compose command
-var queueCmd = &cobra.Command{
-	Use:   "q",
-	Short: "Queue an image build",
+// listCmd represents the list command
+var listCmd = &cobra.Command{
+	Use:   "l",
+	Short: "List composes.",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(api.NewComposeRequest(QueueDistribution, QueueArchitecture, QueueImageType, "demo", strings.Split(QueuePackages, ",")))
+		ids := api.NewComposeListRequest()
+
+		for _, id := range ids {
+			fmt.Println(id)
+		}
 	},
 }
 
 func init() {
-	composeCmd.AddCommand(queueCmd)
-
-	queueCmd.Flags().StringVarP(&QueueDistribution, "distribution", "d", "", "Request a specific distribution.")
-	queueCmd.MarkFlagRequired("distribution")
-
-	queueCmd.Flags().StringVarP(&QueueArchitecture, "architecture", "a", "", "Request a specific architecture.")
-	queueCmd.MarkFlagRequired("architecture")
-
-	queueCmd.Flags().StringVarP(&QueueImageType, "image-type", "t", "", "Request a specific image-type.")
-	queueCmd.MarkFlagRequired("image-type")
-
-	queueCmd.Flags().StringVarP(&QueuePackages, "packages", "p", "", "Comma-separated list of additional packages to install.")
+	composeCmd.AddCommand(listCmd)
 }
