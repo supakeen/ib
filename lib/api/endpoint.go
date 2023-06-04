@@ -79,6 +79,12 @@ type ComposeRequestResponse struct {
 	ID string `json:"id"`
 }
 
+type ComposeListResponse struct {
+	Data []struct {
+		ID string `json:"id"`
+	} `json:"data"`
+}
+
 type Architecture struct {
 	Name       string   `json:"arch"`
 	ImageTypes []string `json:"image_types"`
@@ -311,4 +317,44 @@ func NewArchitecturesRequest(distribution string) []Architecture {
 	})
 
 	return architectures
+}
+
+func NewComposeListRequest() []string {
+	EnsureToken()
+
+	url := "https://console.redhat.com/api/image-builder/v1/composes"
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization", "Bearer "+AccessToken)
+
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var listResponse ComposeListResponse
+
+	err = json.Unmarshal(body, &listResponse)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var ids []string
+
+	for _, id := range listResponse.Data {
+		ids = append(ids, id.ID)
+	}
+
+	return ids
 }
