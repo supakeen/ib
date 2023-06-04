@@ -33,10 +33,10 @@ var listCmd = &cobra.Command{
 	Short: "List composes.",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		ids := api.NewComposeListRequest()
+		composes := api.NewComposeListRequest()
 
-		for _, id := range ids {
-			fmt.Println(id)
+		for _, compose := range composes {
+			fmt.Printf("%s - %s\n", compose.ID, compose.Name)
 		}
 	},
 }

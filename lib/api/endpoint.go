@@ -79,10 +79,13 @@ type ComposeRequestResponse struct {
 	ID string `json:"id"`
 }
 
+type ComposeResponse struct {
+	ID   string `json:"id"`
+	Name string `json:"image_name"`
+}
+
 type ComposeListResponse struct {
-	Data []struct {
-		ID string `json:"id"`
-	} `json:"data"`
+	Data []ComposeResponse `json:"data"`
 }
 
 type Architecture struct {
@@ -319,7 +322,7 @@ func NewArchitecturesRequest(distribution string) []Architecture {
 	return architectures
 }
 
-func NewComposeListRequest() []string {
+func NewComposeListRequest() []ComposeResponse {
 	EnsureToken()
 
 	url := "https://console.redhat.com/api/image-builder/v1/composes"
@@ -350,11 +353,5 @@ func NewComposeListRequest() []string {
 		log.Fatal(err)
 	}
 
-	var ids []string
-
-	for _, id := range listResponse.Data {
-		ids = append(ids, id.ID)
-	}
-
-	return ids
+	return listResponse.Data
 }
